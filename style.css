@@ -1,0 +1,1546 @@
+/* --- 기존 변수 및 리셋 코드는 그대로 유지 --- */
+:root {
+    --bg-light: #fdfafb;
+    --text-light: #2c2c2c;
+    --bg-dark: #070709;
+    --text-dark: #e2e2e2;
+    --crimson-red: #8B0000;
+    --ice-gray: #8ea1b5;
+    --nav-height: 80px;
+    --easing: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: none;
+}
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-light);
+    overflow: hidden;
+    /* 전체 페이지 스크롤 방지, 패널 내부 스크롤만 허용 */
+}
+
+h1,
+h2,
+h3,
+.glitch-text,
+.nav-logo {
+    font-family: 'Noto Serif KR', serif;
+}
+
+/* --- Custom Cursor (핏빛 테마 및 정렬 수정) --- */
+.cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    background: var(--crimson-red);
+    /* 테마에 맞게 핏빛으로 변경 */
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: background 0.3s, transform 0.1s ease-out;
+}
+
+.cursor-follower {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(139, 0, 0, 0.5);
+    /* 커서 테두리도 핏빛으로 변경 */
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: width 0.3s, height 0.3s, background 0.3s;
+}
+
+/* 다크모드/일반모드 구분 없이 일관된 커서 사용 */
+.cursor-hover .cursor-follower {
+    width: 60px;
+    height: 60px;
+    background: rgba(139, 0, 0, 0.15);
+}
+
+.main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--nav-height);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5vw;
+    z-index: 1000;
+    mix-blend-mode: difference;
+    color: #fff;
+}
+
+.nav-logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+}
+
+.nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+}
+
+.nav-item {
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    transition: opacity 0.5s ease;
+    position: relative;
+}
+
+.nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0%;
+    height: 1px;
+    background: #fff;
+    transition: width 0.5s var(--easing);
+}
+
+.nav-item.active {
+    opacity: 1;
+}
+
+.nav-item.active::after {
+    width: 100%;
+}
+
+/* --- Panel Layouts (수정됨: 패널 내부 스크롤 허용) --- */
+.panel-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+.panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: calc(var(--nav-height) + 40px) 5vw 5vw 5vw;
+    display: block;
+    /* Flex 센터링 해제하여 긴 컨텐츠 대응 */
+    overflow-y: auto;
+    /* 패널 내부 세로 스크롤 허용 */
+    overflow-x: hidden;
+    clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+    transition: clip-path 1.2s var(--easing);
+    z-index: 1;
+}
+
+.panel.active {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    z-index: 2;
+}
+
+/* 하이엔드급 커스텀 스크롤바 */
+.panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.panel::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.panel.dark-theme::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Themes */
+.panel.light-theme {
+    background-color: var(--bg-light);
+    color: var(--text-light);
+}
+
+.panel.dark-theme {
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+/* --- 1. Vertical Layout (새로 추가된 세로 중앙 정렬) --- */
+.vertical-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding-top: 5vh;
+    padding-bottom: 100px;
+}
+
+.text-col-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 80px;
+}
+
+.scroll-down-indicator {
+    margin-top: 50px;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    opacity: 0.5;
+    position: relative;
+    padding-bottom: 40px;
+}
+
+.scroll-down-indicator::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 30px;
+    background: currentColor;
+    animation: scrollLine 2s infinite var(--easing);
+}
+
+@keyframes scrollLine {
+    0% {
+        transform: translate(-50%, 0) scaleY(0);
+        transform-origin: top;
+    }
+
+    50% {
+        transform: translate(-50%, 0) scaleY(1);
+        transform-origin: top;
+    }
+
+    50.1% {
+        transform: translate(-50%, 0) scaleY(1);
+        transform-origin: bottom;
+    }
+
+    100% {
+        transform: translate(-50%, 0) scaleY(0);
+        transform-origin: bottom;
+    }
+}
+
+/* 긴 웹툰 이미지를 위한 컨테이너 */
+.img-col-center {
+    width: 100%;
+}
+
+.webtoon-long-container {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+    /* 약간의 그림자로 퀄리티 업 */
+}
+
+.webtoon-long-img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* --- 2 & 3. Split Layout (기존 분할 정렬) --- */
+.split-layout {
+    display: flex;
+    width: 100%;
+    max-width: 1400px;
+    min-height: calc(100vh - var(--nav-height) - 80px);
+    /* 화면 중앙에 위치하도록 최소 높이 설정 */
+    align-items: center;
+    gap: 80px;
+    margin: 0 auto;
+}
+
+.split-layout.reverse {
+    flex-direction: row-reverse;
+}
+
+.text-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.img-col {
+    flex: 1;
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* --- Typography & Animations --- */
+.reveal-text {
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.panel-title {
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    opacity: 0.5;
+    transform: translateY(100%);
+    transition: transform 1s var(--easing);
+}
+
+.panel-subtitle {
+    font-size: 3.5rem;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 30px;
+    transform: translateY(100%);
+    transition: transform 1s var(--easing) 0.1s;
+}
+
+.panel-desc {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    font-weight: 300;
+}
+
+.age {
+    font-size: 1rem;
+    font-family: 'Noto Sans KR', sans-serif;
+    opacity: 0.5;
+    vertical-align: middle;
+}
+
+.crimson {
+    color: var(--crimson-red);
+}
+
+.thin-ice {
+    color: var(--ice-gray);
+}
+
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1s var(--easing) 0.3s;
+}
+
+.fade-in-delay {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1s var(--easing) 0.5s;
+}
+
+.panel.active .panel-title,
+.panel.active .panel-subtitle {
+    transform: translateY(0);
+}
+
+.panel.active .fade-in,
+.panel.active .fade-in-delay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.panel.dark-theme .image-wrapper {
+    background: #1a1a1a;
+}
+
+/* Character Profile & Past Images --- */
+.profile-box {
+    width: 70%;
+    height: 80%;
+    border-radius: 10px;
+}
+
+.profile-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(139, 0, 0, 0);
+    transition: background 0.8s ease;
+    mix-blend-mode: multiply;
+}
+
+.stacked-images {
+    position: relative;
+    width: 100%;
+    height: 80%;
+}
+
+.stacked-images .img-back,
+.stacked-images .img-front {
+    position: absolute;
+    height: 70%;
+    border-radius: 5px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.stacked-images .img-back {
+    top: 0;
+    right: 0;
+    width: 65%;
+    filter: brightness(0.5);
+}
+
+.stacked-images .img-front {
+    bottom: 0;
+    left: 0;
+    width: 70%;
+    z-index: 2;
+}
+
+/* --- Glitch Hover Effect --- */
+.trigger-glitch {
+    font-weight: 500;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    transition: color 0.3s;
+}
+
+.hidden-thoughts {
+    margin-top: 30px;
+    height: 40px;
+}
+
+.glitch-text {
+    font-size: 1.5rem;
+    color: var(--crimson-red);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    position: relative;
+}
+
+/* --- 기존 style.css 내용들 아래에 이어 붙여주세요 --- */
+
+/* --- Chat Button (현재 탭) --- */
+.chat-btn {
+    display: inline-block;
+    margin-top: 50px;
+    padding: 18px 45px;
+    border: 1px solid var(--text-light);
+    color: var(--text-light);
+    text-decoration: none;
+    font-family: 'Noto Serif KR', serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.2em;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.4s var(--easing);
+}
+
+.chat-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--text-light);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.5s var(--easing);
+    z-index: 0;
+}
+
+.chat-btn .btn-text {
+    position: relative;
+    z-index: 1;
+}
+
+/* Hover Effect for Button */
+.chat-btn:hover {
+    color: var(--bg-light);
+}
+
+.chat-btn:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* --- Cinematic Loader --- */
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #030303;
+    /* 가장 깊은 어둠 */
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    /* 로딩 완료 후 위로 스르륵 걷히는 애니메이션 */
+    transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.loader.loaded {
+    transform: translateY(-100%);
+}
+
+.loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    padding: 0 20px;
+}
+
+.loader-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 2rem;
+    letter-spacing: 0.3em;
+    margin-bottom: 10px;
+    opacity: 0.8;
+}
+
+.loader-subtitle {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--crimson-red);
+    margin-bottom: 40px;
+    text-transform: uppercase;
+}
+
+/* 얇고 세련된 프로그레스 바 */
+.progress-wrapper {
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: var(--text-dark);
+    transition: width 0.1s linear;
+}
+
+.loading-status {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+}
+
+/* --- Character Basic Info --- */
+.char-basic-info {
+    margin-bottom: 30px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.info-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.info-list li {
+    display: flex;
+    align-items: flex-start;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+/* 항목 이름(라벨) */
+.info-label {
+    width: 110px;
+    /* 라벨 너비를 고정하여 칼같이 정렬되도록 함 */
+    font-weight: 500;
+    opacity: 0.4;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+}
+
+/* 실제 정보 값 */
+.info-value {
+    font-weight: 300;
+    opacity: 0.9;
+    letter-spacing: 0.02em;
+    color: var(--text-light);
+}
+
+/* 다크모드/다크테마에서 쓰일 경우를 대비한 텍스트 컬러 처리 (현재는 라이트 테마) */
+body.dark-mode-active .info-value,
+.panel.dark-theme .info-value {
+    color: var(--text-dark);
+}
+
+.panel.dark-theme .char-basic-info {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* --- Profile Image Swap & Glitch Hover --- */
+.profile-box {
+    position: relative;
+}
+
+/* 기본 사진 */
+.profile-normal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 110%;
+    transition: opacity 0.4s ease;
+}
+
+/* 호버 시 나타날 사진 (기본은 투명도 0) */
+.profile-dark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 110%;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+/* 자바스크립트로 is-glitching 클래스가 붙었을 때의 변화 */
+.profile-box.is-glitching .profile-normal {
+    opacity: 0;
+    /* 기본 사진 숨김 */
+}
+
+.profile-box.is-glitching .profile-dark {
+    opacity: 1;
+    /* 어두운 사진 등장 */
+    /* 사진 자체에도 불안하게 미세하게 떨리는 효과 부여 */
+    animation: img-shake 0.2s infinite;
+}
+
+@keyframes img-shake {
+    0% {
+        transform: scale(1.05) translate(0, 0);
+    }
+
+    25% {
+        transform: scale(1.06) translate(2px, -1px);
+    }
+
+    50% {
+        transform: scale(1.05) translate(-2px, 2px);
+    }
+
+    75% {
+        transform: scale(1.06) translate(-1px, -2px);
+    }
+
+    100% {
+        transform: scale(1.05) translate(1px, 1px);
+    }
+}
+
+/* --- Intense Glitch Text (멘헤라 텍스트 효과) --- */
+.glitch-text {
+    font-size: 1.5rem;
+    color: var(--crimson-red);
+    opacity: 0;
+    position: relative;
+    display: inline-block;
+    transition: opacity 0.3s ease;
+}
+
+/* 텍스트가 나타날 때 미친 듯이 깜빡거림 */
+.glitch-text.is-active {
+    opacity: 1;
+    animation: text-flicker 0.15s infinite alternate;
+}
+
+/* 글리치 잔상 (파란색, 빨간색 찢어짐 효과) */
+.glitch-text.is-active::before,
+.glitch-text.is-active::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-light);
+    /* 배경색으로 덮으면서 찢어짐 */
+}
+
+.glitch-text.is-active::before {
+    left: 4px;
+    text-shadow: -2px 0 #00ffff;
+    animation: glitch-anim-1 0.2s infinite linear alternate-reverse;
+    z-index: -1;
+}
+
+.glitch-text.is-active::after {
+    left: -4px;
+    text-shadow: -2px 0 var(--crimson-red);
+    animation: glitch-anim-2 0.3s infinite linear alternate-reverse;
+    z-index: -2;
+}
+
+@keyframes text-flicker {
+    0% {
+        opacity: 1;
+        transform: skewX(0deg);
+    }
+
+    20% {
+        opacity: 0.8;
+        transform: skewX(-15deg);
+    }
+
+    40% {
+        opacity: 1;
+        transform: skewX(15deg);
+    }
+
+    60% {
+        opacity: 0.5;
+        transform: skewX(0deg);
+    }
+
+    80% {
+        opacity: 1;
+        transform: skewX(10deg);
+    }
+
+    100% {
+        opacity: 0.8;
+        transform: skewX(-5deg);
+    }
+}
+
+@keyframes glitch-anim-1 {
+    0% {
+        clip-path: inset(20% 0 80% 0);
+    }
+
+    20% {
+        clip-path: inset(60% 0 10% 0);
+    }
+
+    40% {
+        clip-path: inset(40% 0 50% 0);
+    }
+
+    60% {
+        clip-path: inset(80% 0 5% 0);
+    }
+
+    80% {
+        clip-path: inset(10% 0 70% 0);
+    }
+
+    100% {
+        clip-path: inset(30% 0 20% 0);
+    }
+}
+
+@keyframes glitch-anim-2 {
+    0% {
+        clip-path: inset(10% 0 60% 0);
+    }
+
+    20% {
+        clip-path: inset(30% 0 20% 0);
+    }
+
+    40% {
+        clip-path: inset(70% 0 10% 0);
+    }
+
+    60% {
+        clip-path: inset(20% 0 50% 0);
+    }
+
+    80% {
+        clip-path: inset(90% 0 5% 0);
+    }
+
+    100% {
+        clip-path: inset(50% 0 30% 0);
+    }
+}
+
+/* --- High-end BGM Player --- */
+.bgm-player {
+    position: fixed;
+    bottom: 30px;
+    right: 40px;
+    /* 웹툰을 가리지 않도록 우측 하단으로 뺌 */
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    /* 우측 정렬 */
+    gap: 8px;
+    background: rgba(10, 10, 12, 0.6);
+    /* 글래스모피즘 박스 안에 담아 웹툰과 겹쳐도 잘 보이게 함 */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 15px 25px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.bgm-info {
+    margin-bottom: 5px;
+}
+
+.bgm-title {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    opacity: 0.6;
+    color: var(--text-dark);
+}
+
+.bgm-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.bgm-toggle {
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-dark);
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.bgm-toggle:hover {
+    opacity: 1;
+}
+
+.bgm-status-text {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+}
+
+.eq-icon {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 12px;
+    width: 14px;
+}
+
+.eq-bar {
+    width: 2px;
+    height: 100%;
+    background-color: var(--crimson-red);
+    transform-origin: bottom;
+    transform: scaleY(0.2);
+    /* 멈춰있을 땐 잔잔한 높이 유지 */
+    transition: transform 0.2s ease;
+}
+
+.bgm-toggle.is-playing .eq-bar:nth-child(1) {
+    animation: eq-play 0.7s infinite alternate ease-in-out;
+}
+
+.bgm-toggle.is-playing .eq-bar:nth-child(2) {
+    animation: eq-play 0.5s infinite alternate ease-in-out;
+}
+
+.bgm-toggle.is-playing .eq-bar:nth-child(3) {
+    animation: eq-play 0.8s infinite alternate ease-in-out;
+}
+
+.bgm-toggle.is-playing .eq-bar:nth-child(4) {
+    animation: eq-play 0.6s infinite alternate ease-in-out;
+}
+
+@keyframes eq-play {
+    0% {
+        transform: scaleY(0.2);
+    }
+
+    100% {
+        transform: scaleY(1);
+    }
+}
+
+/* 볼륨 조절바 디자인 다듬기 */
+.volume-container {
+    width: 80px;
+    display: flex;
+    align-items: center;
+}
+
+.volume-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    outline: none;
+    border-radius: 2px;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text-dark);
+    transition: transform 0.2s, background 0.2s;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.3);
+    background: var(--crimson-red);
+}
+
+/* ========================================================= */
+/* 🌟 HIGHI-END DETAILS & ANIMATIONS 🌟 */
+/* ========================================================= */
+
+/* --- 1. Micro Details (텍스트 드래그 핏빛 색상) --- */
+::selection {
+    background: var(--crimson-red);
+    color: var(--text-dark);
+}
+
+/* --- 2. Cinematic Film Grain (노이즈 효과 대폭 감소) --- */
+.film-grain {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    /* 입자를 더 곱게(baseFrequency='0.8') 만들어서 지저분함을 없앰 */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.015;
+    /* ✨ 기존 0.04에서 0.015로 대폭 낮추어 은은하게 변경 ✨ */
+    pointer-events: none;
+    z-index: 99997;
+    animation: grain 8s steps(10) infinite;
+}
+
+@keyframes grain {
+
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    10% {
+        transform: translate(-5%, -10%);
+    }
+
+    20% {
+        transform: translate(-15%, 5%);
+    }
+
+    30% {
+        transform: translate(7%, -25%);
+    }
+
+    40% {
+        transform: translate(-5%, 25%);
+    }
+
+    50% {
+        transform: translate(-15%, 10%);
+    }
+
+    60% {
+        transform: translate(15%, 0%);
+    }
+
+    70% {
+        transform: translate(0%, 15%);
+    }
+
+    80% {
+        transform: translate(3%, 35%);
+    }
+
+    90% {
+        transform: translate(-10%, 10%);
+    }
+}
+
+/* --- 3. Page Transition Layer (핏빛 화면 전환) --- */
+.transition-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--crimson-red);
+    z-index: 99998;
+    /* 로더보단 아래, 노이즈보단 위 */
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+    pointer-events: none;
+}
+
+.transition-layer.is-active {
+    transform: scaleY(1);
+    transform-origin: bottom;
+}
+
+.transition-layer.is-leaving {
+    transform: scaleY(0);
+    transform-origin: top;
+}
+
+/* --- 4. Text Split Animation (글자가 하나씩 촤르르) --- */
+.split-char {
+    display: inline-block;
+    transform: translateY(100%);
+    opacity: 0;
+    transition: transform 0.8s var(--easing), opacity 0.8s ease;
+}
+
+.split-char.space {
+    width: 0.3em;
+}
+
+/* 띄어쓰기 간격 유지 */
+.panel.active .split-char {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* --- 5. Image Reveal & Zoom Out (화질 저하 방지) --- */
+.image-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #1a1a1a;
+    position: relative;
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.image-wrapper.is-revealed {
+    clip-path: inset(0 0 0 0);
+}
+
+.parallax-img {
+    width: 100%;
+    height: 110%;
+    object-fit: cover;
+    transform: scale(1.05);
+    /* ✨ 1.3배에서 1.05배로 줄여 화질 뭉개짐 방지 ✨ */
+    transition: transform 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.image-wrapper.is-revealed .parallax-img {
+    transform: scale(1);
+    /* 원래 비율(1배)로 부드럽게 복귀 */
+}
+
+/* 마그네틱 버튼용 부드러운 전환 */
+.nav-item,
+.chat-btn,
+.bgm-toggle {
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s;
+}
+
+/* ========================================================= */
+/* 🌟 HIGHI-END DETAILS PHASE 2 🌟 */
+/* ========================================================= */
+
+/* --- 1. Blood Cursor Trail Canvas --- */
+#blood-trail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    /* 클릭을 방해하지 않음 */
+    z-index: 9997;
+    /* 커서 바로 아래에 위치 */
+}
+
+/* --- 2. Circular Scroll Progress --- */
+.scroll-progress {
+    position: fixed;
+    right: 35px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 999;
+    opacity: 0;
+    /* 평소엔 숨김 (JS로 제어) */
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+
+.progress-ring-circle {
+    /* 2 * pi * 24(반지름) = 약 150.7 */
+    stroke-dasharray: 150.7;
+    stroke-dashoffset: 150.7;
+    transition: stroke-dashoffset 0.1s linear;
+    transform: rotate(-90deg);
+    /* 12시 방향부터 시작하도록 회전 */
+    transform-origin: 50% 50%;
+}
+
+/* --- 3. 3D Tilt Image Effect를 위한 부모 속성 --- */
+.img-col {
+    perspective: 1000px;
+    /* 3D 공간감 부여 */
+}
+
+/* ========================================================= */
+/* 🌟 HIGHI-END DETAILS PHASE 3 🌟 */
+/* ========================================================= */
+
+/* --- 1. Floating Ashes Canvas --- */
+#ashes-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    /* 클릭 방해 없음 */
+    z-index: 9990;
+    /* 컨텐츠 위, 커서 아래에 떠다니는 공간감 */
+    opacity: 0.7;
+}
+
+/* --- 2. Crimson Click Ripple (핏빛 클릭 물결) --- */
+.blood-ripple {
+    position: fixed;
+    border-radius: 50%;
+    /* 피가 물에 퍼지는 듯한 그라데이션 */
+    background: radial-gradient(circle, rgba(139, 0, 0, 0.5) 0%, rgba(139, 0, 0, 0) 70%);
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0);
+    animation: bloodRipple 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    z-index: 9996;
+}
+
+@keyframes bloodRipple {
+    0% {
+        transform: translate(-50%, -50%) scale(0.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(2.5);
+        opacity: 0;
+    }
+}
+
+/* 텍스트 그림자 트랜지션을 위한 추가 속성 */
+.panel-subtitle,
+.panel-title {
+    will-change: text-shadow;
+}
+
+/* ========================================================= */
+/* 🌟 HIGHI-END DETAILS PHASE 4 (심리적 압박) 🌟 */
+/* ========================================================= */
+
+/* --- 1. CCTV Scanlines (가로줄 노이즈) --- */
+.scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1));
+    background-size: 100% 4px;
+    /* 4px 간격의 얇은 가로줄 */
+    z-index: 99996;
+    /* 캔버스 위, 로더 아래 */
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* --- 2. Idle Anxiety (방치 감지 핏빛 심장박동) --- */
+.vignette-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at center, transparent 30%, rgba(139, 0, 0, 0.8) 150%);
+    z-index: 99995;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+}
+
+body.is-idle .vignette-layer {
+    opacity: 1;
+    animation: heartbeat 1.2s infinite;
+}
+
+@keyframes heartbeat {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+
+    15% {
+        transform: scale(1.03);
+        opacity: 1;
+    }
+
+    30% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+
+    45% {
+        transform: scale(1.03);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+}
+
+/* --- 3. Chromatic Aberration (스크롤 시 색수차 왜곡) --- */
+.webtoon-long-img,
+.parallax-img {
+    transition: filter 0.2s ease-out, transform 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* 스크롤 중일 때만 파란색/빨간색 잔상이 어긋남 */
+body.is-scrolling .webtoon-long-img,
+body.is-scrolling .parallax-img {
+    filter: drop-shadow(4px 0 0 rgba(255, 0, 0, 0.5)) drop-shadow(-4px 0 0 rgba(0, 255, 255, 0.5));
+}
+
+/* --- 4. Cursed Button (저주받은 버튼) --- */
+.chat-btn.is-cursed {
+    color: var(--crimson-red);
+    font-weight: 600;
+    text-shadow: 2px 0 #00ffff, -2px 0 var(--crimson-red);
+    animation: text-flicker 0.1s infinite;
+    /* 기존 글리치 애니메이션 재활용 */
+    border-color: var(--crimson-red);
+}
+
+.chat-btn.is-cursed::before {
+    background: #111;
+    /* 버튼 배경을 시커멓게 바꿈 */
+}
+
+/* ========================================================= */
+/* 🌟 HIGHI-END DETAILS PHASE 5 (현실 침범) 🌟 */
+/* ========================================================= */
+
+/* --- 1. Fake Push Notification --- */
+.fake-push {
+    position: fixed;
+    top: -120px;
+    right: 20px;
+    width: 320px;
+    background: rgba(15, 15, 17, 0.9);
+    border: 1px solid rgba(139, 0, 0, 0.5);
+    border-left: 4px solid var(--crimson-red);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    z-index: 99999;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    transition: top 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+}
+
+.fake-push.is-visible {
+    top: 30px;
+}
+
+/* 튀어나오는 위치 */
+.push-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover;
+    flex-shrink: 0;
+}
+
+.push-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 5px;
+}
+
+.push-message {
+    font-size: 0.8rem;
+    color: #ccc;
+    line-height: 1.4;
+    word-break: keep-all;
+}
+
+/* --- 2. Jumpscare Flash --- */
+.jumpscare-flash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    color: var(--crimson-red);
+    font-family: 'Noto Serif KR', serif;
+    font-size: 15vw;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.jumpscare-flash.is-flashing {
+    /* 0.15초 동안 화면이 반전되었다가 사라지는 엄청난 플래시 효과 */
+    animation: flashAnim 0.15s ease-out forwards;
+}
+
+@keyframes flashAnim {
+    0% {
+        opacity: 1;
+        transform: scale(1.1);
+        filter: invert(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1);
+        filter: invert(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.05);
+    }
+}
+
+/* --- 3. Keyboard Easter Egg Blackout --- */
+.blackout-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.blackout-screen.is-active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.blackout-text {
+    color: var(--crimson-red);
+    font-family: 'Noto Serif KR', serif;
+    font-size: 4rem;
+    letter-spacing: 0.2em;
+    animation: text-flicker 0.1s infinite;
+}
+
+/* --- 5. System Error Footer (이스터에그 힌트) --- */
+.site-footer {
+    position: absolute;
+    bottom: 40px;
+    left: 5vw;
+    /* 네비게이션 로고와 같은 라인에 정렬 */
+    z-index: 10;
+}
+
+.copyright {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    opacity: 0.3;
+    margin-bottom: 5px;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.sys-log {
+    /* 개발자/터미널 느낌을 내는 고정폭 폰트 적용 */
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.65rem;
+    color: var(--crimson-red);
+    opacity: 0.5;
+    letter-spacing: 0.05em;
+    /* 시스템 오류가 난 것처럼 아주 불규칙하고 미세하게 깜빡거림 */
+    animation: text-flicker 4s infinite alternate-reverse;
+}
+
+/* ========================================================= */
+/* 🌟 HIGHI-END DETAILS PHASE 6 (심연의 기믹) 🌟 */
+/* ========================================================= */
+
+/* --- 1. The Stalker's Eye (감시자의 눈동자) --- */
+.stalker-eye {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 60vw;
+    height: 60vw;
+    max-width: 800px;
+    max-height: 800px;
+
+    /* ✨ 수정 1: 투명도를 0.03 -> 0.15로 올려서 눈에 확실히 띄게 변경 */
+    background: radial-gradient(circle, rgba(139, 0, 0, 0.15) 0%, rgba(139, 0, 0, 0) 65%);
+    border-radius: 50%;
+    pointer-events: none;
+
+    /* ✨ 수정 2: 패널 배경 뒤에 숨지 않도록 z-index를 재 파티클(9990) 바로 아래인 9989로 대폭 상향 */
+    z-index: 9989;
+    transform: translate(-50%, -50%);
+    will-change: transform;
+
+    /* ✨ 수정 3: 붉은빛이 배경이나 텍스트와 자연스럽게 겹치도록 스크린 블렌딩 추가 */
+    mix-blend-mode: screen;
+}
+
+/* --- 2. The Shatter (분노의 화면 붕괴 이스터에그) --- */
+.nav-logo {
+    cursor: pointer;
+    /* 클릭해보고 싶게 커서 모양 변경 */
+    transition: color 0.3s, text-shadow 0.3s;
+}
+
+/* 3번 클릭되어 분노한 로고 상태 */
+.nav-logo.is-bloody {
+    color: var(--crimson-red) !important;
+    text-shadow: 2px 0 15px rgba(139, 0, 0, 0.8), -2px 0 10px rgba(255, 0, 0, 0.4);
+    animation: text-flicker 0.1s infinite;
+}
+
+/* 화면 전체가 조각조각 찢어지는 글리치 애니메이션 */
+body.is-shattered .panel-container {
+    animation: shatterAnim 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    filter: drop-shadow(10px 0 0 rgba(139, 0, 0, 0.8)) drop-shadow(-10px 0 0 rgba(0, 255, 255, 0.5));
+}
+
+@keyframes shatterAnim {
+    0% {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        transform: translate(0, 0);
+    }
+
+    20% {
+        clip-path: polygon(0 15%, 100% 15%, 100% 85%, 0 85%);
+        transform: translate(-15px, 10px);
+    }
+
+    40% {
+        clip-path: polygon(0 40%, 100% 0%, 100% 60%, 0 100%);
+        transform: translate(20px, -15px) skewX(5deg);
+    }
+
+    60% {
+        clip-path: polygon(0 0, 100% 50%, 100% 100%, 0 50%);
+        transform: translate(-10px, -5px) skewX(-5deg);
+    }
+
+    80% {
+        clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%);
+        transform: translate(10px, 15px);
+    }
+
+    100% {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        transform: translate(0, 0);
+    }
+}
+
+/* ========================================================= */
+/* 🌟 HIGHI-END DETAILS PHASE 7 (The Grand Finale) 🌟 */
+/* ========================================================= */
+
+/* --- 1. Gateway Terminal Glitch --- */
+.gateway-terminal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #050505;
+    /* 완전 칠흑 같은 색 */
+    color: #00ff00;
+    font-family: 'Courier New', Courier, monospace;
+    z-index: 9999999;
+
+    /* ✨ 수정됨: 좌측 여백을 5vw로 주어 사이트 전체 여백과 깔끔하게 일치시킴 */
+    padding: 10vh 5vw;
+
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.1s;
+}
+
+.gateway-terminal.is-active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.terminal-line {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+    word-break: break-all;
+}
+
+/* 다비의 경고 메시지용 붉은색 클래스 */
+.terminal-line.warning {
+    color: var(--crimson-red);
+    text-shadow: 0 0 8px rgba(139, 0, 0, 0.8);
+    font-weight: bold;
+    font-size: 1.3rem;
+}
